@@ -42,13 +42,11 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_belize"
-
 		]
 	},
-
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "PassagemZPP_PASSAGEM.view.View1",
+			"viewName": "PassagemZPP_PASSAGEM.view.Passagem",
 			"type": "XML"
 		},
 		"dependencies": {
@@ -90,5 +88,9 @@
 				"uri": "css/style.css"
 			}]
 		}
-	}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/z_passagem/webapp",
+		"_version": "1.1.0"
+	}	
 }
