@@ -15,9 +15,8 @@ sap.ui.define([
 			this.setModel(new JSONModel({
 				busy: false,
 				//FilterData
-				ReimpressaoSet: [],
-				Impressora: "",
-				Peso: ""
+				PassagemSet: [],
+				Aufnr: ""
 			}), "viewModel");
 			var that = this;
 			// this._currentContext = this.getSource().getBindingContext();
@@ -41,11 +40,7 @@ sap.ui.define([
 			this.oDialog.close();
 			this.oDialog.destroy(true);
 			
-			if ( !oDialogData.Aufnr ) {
-				oDialogData.Aufnr = "0";
-			}
 			var oModel = this.getModel();
-
 
 			this.getModel("viewModel").setProperty("/busy", true);
 			oModel.invalidate();
@@ -55,19 +50,71 @@ sap.ui.define([
 					Aufnr: oDialogData.Aufnr
 				},
 				success: function(oData) {
-					that.getModel("viewModel").setProperty("/PassagemSet", oData.results);
-					that.getModel("viewModel").setProperty("/busy", false);
-					that.getView().byId("tbPassagem").getBinding("items").refresh();
+					if (!oData.Barcode) {
+						MessageBox.information("Não foi possível localizar a ordem informada.");
+						that.getModel("viewModel").setProperty("/busy", false);
+						that.navigateBack();
+					} else {
+						that.getModel("viewModel").setProperty("/Aufnr", oData.Barcode);
+					    that.getModel("viewModel").setProperty("/busy", false);
+					    // that.oDialog.close();
+						// that.oDialog.destroy(true);
+						that.scanHU().then(function (scanned) {
+							var barcode = scanned;
+							var oModel2 = that.getModel();
+							oModel2.invalidate();
+							oModel2.callFunction("/Transferencia", {
+								method: "GET",
+								urlParameters: {
+									User: 'N',
+									Barcode: barcode,
+									Aufnr: that.getModel("viewModel").getProperty("/Aufnr")
+								},
+								success: function(Data) {	
+									that.getModel("viewModel").setProperty("/PassagemSet", Data.results);
+									that.getModel("viewModel").setProperty("/busy", false);
+									that.getView().byId("tbPassagem").getBinding("items").refresh();
+									that.lerCod();
+								},
+								error: function(error) {
+									that.getModel("viewModel").setProperty("/busy", false);
+								}
+							});	
+						});																
+					}
 				},
 				error: function(error) {
 					// alert(this.oResourceBundle.getText("ErrorReadingProfile"));
 					// oGeneralModel.setProperty("/sideListBusy", false);
+					MessageBox.information("Erro");
 					that.getModel("viewModel").setProperty("/busy", false);
 				}
 			});
 		},		
-		Imprimir: function(oEvent) {
-
+		lerCod: function() {
+			var that = this;
+			this.scanHU().then(function (scanned) {
+				var barcode = scanned;
+				var oModel = that.getModel();
+				oModel.invalidate();
+				oModel.callFunction("/Transferencia", {
+					method: "GET",
+					urlParameters: {
+						User: 'O',
+						Barcode: barcode,
+						Aufnr: that.getModel("viewModel").getProperty("/Aufnr")
+					},
+					success: function(oData) {	
+						that.getModel("viewModel").setProperty("/PassagemSet", oData.results);
+						that.getModel("viewModel").setProperty("/busy", false);
+						that.getView().byId("tbMontaKIT").getBinding("items").refresh();
+						that.lerCod();
+					},
+					error: function(error) {
+						that.getModel("viewModel").setProperty("/busy", false);
+					}
+				});	
+			});					
 		}
 	});
 });
