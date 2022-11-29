@@ -18,7 +18,7 @@
 					"localUri": "localService/metadata.xml"
 				}
 			}
-		},		
+		},
 		"sourceTemplate": {
 			"id": "ui5template.basicSAPUI5ApplicationProject",
 			"version": "1.40.12"
@@ -81,16 +81,18 @@
 				},
 				"dataSource": "Z_PASSAGEM_SRV",
 				"preload": true
-			}			
+			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		}
 	},
 	"sap.platform.abap": {
 		"uri": "/sap/bc/ui5_ui5/sap/z_passagem/webapp",
 		"_version": "1.1.0"
-	}	
+	}
 }

@@ -71,10 +71,14 @@ sap.ui.define([
 									Aufnr: that.getModel("viewModel").getProperty("/Aufnr")
 								},
 								success: function(Data) {	
-									that.getModel("viewModel").setProperty("/PassagemSet", Data.results);
-									that.getModel("viewModel").setProperty("/busy", false);
-									that.getView().byId("tbPassagem").getBinding("items").refresh();
-									that.lerCod();
+									if	(Data.results.length === that.getView().byId("tbPassagem").getBinding("items").iLength) {
+										MessageBox.information("Não foi possível localizar a etiqueta");
+									} else {
+										that.getModel("viewModel").setProperty("/PassagemSet", Data.results);
+										that.getModel("viewModel").setProperty("/busy", false);
+										that.getView().byId("tbPassagem").getBinding("items").refresh();
+										that.lerCod();
+									}
 								},
 								error: function(error) {
 									that.getModel("viewModel").setProperty("/busy", false);
@@ -105,16 +109,24 @@ sap.ui.define([
 						Aufnr: that.getModel("viewModel").getProperty("/Aufnr")
 					},
 					success: function(oData) {	
-						that.getModel("viewModel").setProperty("/PassagemSet", oData.results);
-						that.getModel("viewModel").setProperty("/busy", false);
-						that.getView().byId("tbMontaKIT").getBinding("items").refresh();
-						that.lerCod();
+						if	(oData.results.length === that.getView().byId("tbPassagem").getBinding("items").iLength) {
+							MessageBox.information("Não foi possível localizar a etiqueta");
+						} else {						
+							that.getModel("viewModel").setProperty("/PassagemSet", oData.results);
+							that.getModel("viewModel").setProperty("/busy", false);
+							that.getView().byId("tbMontaKIT").getBinding("items").refresh();
+							that.lerCod();
+						}
 					},
 					error: function(error) {
 						that.getModel("viewModel").setProperty("/busy", false);
 					}
 				});	
 			});					
-		}
+		},
+		onCloseDialog: function() {
+			this.oDialog.close();
+			this.oDialog.destroy(true);
+		}	
 	});
 });
