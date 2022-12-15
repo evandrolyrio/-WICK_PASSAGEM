@@ -7,7 +7,7 @@
 				labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
 				<Toolbar>
 					<ToolbarSpacer/>
-					<Button text="Ler Etiqueta" icon="sap-icon://bar-code" press="Ler"/>
+					<Button text="Ler Etiqueta" icon="sap-icon://bar-code" press="lerCod"/>
 				</Toolbar>
 			</form:SimpleForm>
 		</semantic:headerContent>
