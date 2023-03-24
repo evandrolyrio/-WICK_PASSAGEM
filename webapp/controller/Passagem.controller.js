@@ -44,7 +44,7 @@ sap.ui.define([
 
 			this.getModel("viewModel").setProperty("/busy", true);
 			oModel.invalidate();
-			oModel.callFunction("/GetPassagem", {
+			oModel.callFunction("/GetPassagem2", {
 				method: "GET",
 				urlParameters: {
 					Aufnr: oDialogData.Aufnr
@@ -59,39 +59,39 @@ sap.ui.define([
 					    that.getModel("viewModel").setProperty("/busy", false);
 					    // that.oDialog.close();
 						// that.oDialog.destroy(true);
-						that.scanHU().then(function (scanned) {
-							var barcode = scanned;
+						// that.scanHU().then(function (scanned) {
+							// var barcode = scanned;
 							var oModel2 = that.getModel();
 							oModel2.invalidate();
 							oModel2.callFunction("/Transferencia", {
 								method: "GET",
 								urlParameters: {
 									User: 'N',
-									Barcode: barcode,
+									Barcode: '0011',
 									Aufnr: that.getModel("viewModel").getProperty("/Aufnr")
 								},
 								success: function(Data) {	
 									if	(Data.results.length === that.getView().byId("tbPassagem").getBinding("items").iLength) {
-										MessageBox.information("Etiqueta já lida");
+										// MessageBox.information("Etiqueta já lida");
 									} else {
 										that.getModel("viewModel").setProperty("/PassagemSet", Data.results);
 										that.getModel("viewModel").setProperty("/busy", false);
 										that.getView().byId("tbPassagem").getBinding("items").refresh();
-										that.lerCod();
+										// that.lerCod();
 									}
 								},
 								error: function(error) {
 									that.getModel("viewModel").setProperty("/busy", false);
-									MessageBox.information("Etiqueta já lida");
+									// MessageBox.information("Etiqueta já lida");
 								}
 							});	
-						});																
+						// });																
 					}
 				},
 				error: function(error) {
 					// alert(this.oResourceBundle.getText("ErrorReadingProfile"));
 					// oGeneralModel.setProperty("/sideListBusy", false);
-					MessageBox.information("Erro");
+					MessageBox.information("Para essa OP as etiquetas já foram processadas na passagem");
 					that.getModel("viewModel").setProperty("/busy", false);
 				}
 			});
@@ -111,7 +111,7 @@ sap.ui.define([
 					},
 					success: function(oData) {	
 						if	(oData.results.length === that.getView().byId("tbPassagem").getBinding("items").iLength) {
-							MessageBox.information("Não foi possível localizar a etiqueta");
+							MessageBox.information("Não foi possível localizar a etiqueta ou Etiqueta já lida");
 						} else {						
 							that.getModel("viewModel").setProperty("/PassagemSet", oData.results);
 							that.getModel("viewModel").setProperty("/busy", false);
@@ -121,7 +121,7 @@ sap.ui.define([
 					},
 					error: function(error) {
 						that.getModel("viewModel").setProperty("/busy", false);
-						MessageBox.information("Etiqueta já lida");
+						// MessageBox.information("Etiqueta já lida");
 					}
 				});	
 			});					
